@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Pro | Library Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2><i class="fas fa-book-open"></i> <span>LMS Pro</span></h2>
+        <ul id="nav-list">
+            <li class="active" data-target="catalog"><i class="fas fa-th-large"></i> <span>Catalog</span></li>
+            <li data-target="members"><i class="fas fa-users"></i> <span>Members</span></li>
+            <li data-target="lending"><i class="fas fa-exchange-alt"></i> <span>Lending</span></li>
+            <li data-target="reports"><i class="fas fa-chart-line"></i> <span>Reports</span></li>
+        </ul>
+    </div>
+
+    <main class="main-content">
+        <!-- Catalog Section -->
+        <section id="catalog" class="active">
+            <header>
+                <h1>Library Catalog</h1>
+            </header>
+            <div class="controls" style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); display: flex; gap: 1rem; align-items: center; border: 1px solid var(--border);">
+                <div style="position: relative; flex: 1;">
+                    <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light);"></i>
+                    <input type="text" id="bookSearch" class="search-input" placeholder="Search title or author..." style="padding-left: 2.8rem; height: 50px;">
+                </div>
+                <button class="btn-outline" onclick="searchOpenLibrary()" style="height: 50px; padding: 0 1.5rem; display: flex; align-items: center; gap: 0.5rem; border-color: var(--primary); color: var(--primary);">
+                    <i class="fas fa-book"></i> Search Library
+                </button>
+                <button class="btn-primary" onclick="openModal('bookModal')" style="height: 50px; padding: 0 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-plus"></i> Add New Book
+                </button>
+            </div>
+            
+            <div class="genre-center" style="margin-top: 1.5rem; text-align: center;">
+                <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 0.8rem;">Filter by Genre:</p>
+                <div class="genre-suggestions" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <span class="genre-badge" onclick="exploreGenre('Fiction')">Fiction</span>
+                    <span class="genre-badge" onclick="exploreGenre('Non-Fiction')">Non-Fiction</span>
+                    <span class="genre-badge" onclick="exploreGenre('Science')">Science</span>
+                    <span class="genre-badge" onclick="exploreGenre('Technology')">Technology</span>
+                    <span class="genre-badge" onclick="exploreGenre('History')">History</span>
+                    <span class="genre-badge" onclick="exploreGenre('Art')">Art</span>
+                    <span class="genre-badge" style="background:#ef4444; color:white;" onclick="resetSearch()">Clear Filters</span>
+                </div>
+            </div>
+
+            <div id="suggestedBooksContainer" style="display: none; margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+                <h3 id="suggestionHeading"><i class="fas fa-lightbulb"></i> Suggested for you</h3>
+                <div id="suggestionGrid" class="suggestion-grid">
+                    <!-- Dynamic suggestions will be loaded here -->
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;"><i class="fas fa-list"></i> Your Collection</h3>
+            <div id="bookGrid" class="book-grid">
+                <!-- Cards will be injected here -->
+            </div>
+        </section>
+                <!-- Cards will be injected here -->
+            </div>
+        </section>
+
+        <!-- Members Section -->
+        <section id="members">
+            <header>
+                <h1>Member Directory</h1>
+            </header>
+            <div class="controls">
+                <input type="text" id="memberSearch" class="search-input" placeholder="Search members by name/email...">
+                <button class="btn-primary" onclick="openModal('memberModal')">
+                    <i class="fas fa-user-plus"></i> Register Member
+                </button>
+            </div>
+            <div id="memberList" class="data-card">
+                <!-- Member rows will be injected here -->
+            </div>
+        </section>
+
+        <!-- Lending Section -->
+        <section id="lending">
+            <header>
+                <h1>Book Lending Center</h1>
+            </header>
+            <div class="lending-layout">
+                <div class="card">
+                    <h3><i class="fas fa-level-down-alt"></i> Issue a Book</h3>
+                    <div class="form-group">
+                        <label>Select Member</label>
+                        <select id="loanMemberId" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Select Book</label>
+                        <select id="loanBookId" class="form-control"></select>
+                    </div>
+                    <button class="btn-primary" style="width: 100%" onclick="issueBook()">
+                        Process Loan
+                    </button>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-clipboard-list"></i> Active Loans</h3>
+                    <div id="activeLoans"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports">
+            <header>
+                <h1>Dashboard & Reports</h1>
+            </header>
+            <div class="reports-grid">
+                <div class="card">
+                    <h3><i class="fas fa-fire"></i> Most Popular Books</h3>
+                    <ul id="popularBooks"></ul>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-exclamation-circle"></i> Overdue Books</h3>
+                    <ul id="overdueBooks"></ul>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-hourglass-half"></i> Active Waitlists</h3>
+                    <ul id="activeWaitlists"></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="bookModalTitle">Add New Book</h2>
+                <button class="btn-outline" onclick="closeModal('bookModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <input type="hidden" id="bookId" value="">
+            <div class="form-group">
+                <label>Book Title</label>
+                <input type="text" id="bookTitle" class="form-control" placeholder="Search or enter title...">
+            </div>
+            <div class="form-group">
+                <label>Author (Optional)</label>
+                <input type="text" id="bookAuthor" class="form-control" placeholder="Enter author name...">
+            </div>
+            <div class="form-group">
+                <label>Category (Optional)</label>
+                <select id="bookCategory" class="form-control">
+                    <option value="">Select a category...</option>
+                    <option value="Fiction">Fiction</option>
+                    <option value="Non-Fiction">Non-Fiction</option>
+                    <option value="Science">Science</option>
+                    <option value="Technology">Technology</option>
+                    <option value="History">History</option>
+                    <option value="Art">Art</option>
+                    <option value="Biography">Biography</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Fantasy">Fantasy</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button class="btn-outline" onclick="closeModal('bookModal')">Cancel</button>
+                <button class="btn-primary" onclick="addBook()">Save Book</button>
+            </div>
+        </div>
+    </div>
+
+  
+
+    <div id="memberModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Register New Member</h2>
+                <button class="btn-outline" onclick="closeModal('memberModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="memberName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="memberEmail" class="form-control">
+            </div>
+            <div class="form-actions">
+                <button class="btn-outline" onclick="closeModal('memberModal')">Cancel</button>
+                <button class="btn-primary" onclick="addMember()">Register</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
